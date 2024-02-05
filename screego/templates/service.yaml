@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "screego.fullname" . }}
+  labels:
+    {{- include "screego.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "screego.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "screego.fullname" . }}-turn
+  labels:
+    {{- include "screego.labels" . | nindent 4 }}
+spec:
+  type: NodePort
+  ports:
+    - port: 32000
+      targetPort: turn-tcp
+      protocol: TCP
+      name: turn-tcp
+      nodePort: 32000
+  selector:
+    {{- include "screego.selectorLabels" . | nindent 4 }}
